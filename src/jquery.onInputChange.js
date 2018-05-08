@@ -8,7 +8,6 @@
 		time
 	}})
 	*/
-
 (function ($) {
 	// code form modernizr.js
 	function createElement(isSVG) {
@@ -121,13 +120,8 @@
 
 		this.$element = $(selector)
 		this.element = this.$element[0]
-		if (!this.element) return
-		// this.value init after focus(_listen) in delegate way
-		// this.value = this.element.value === undefined ? "" : this.element.value
-
-		// need cancel callback if unlisten is called
-		// this._callback = onInputSupport ? debounce(cb, time) : cb
-
+		// selector invalid or input event is supported
+		if (!this.element || onInputSupport) return
 		this.options = $.extend({
 			time: time
 		}, opt)
@@ -142,31 +136,19 @@
 			console.log("listen")
 			// init this.value in delegate way
 			this.value = this.element.value
-			if (onInputSupport) {
-				this.$element.on('input', $.proxy(this._run, this));
-			}
-			else {
-				// ie8下blur不触发bug？
-				this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
-			}
+			this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
 			return true;
 		},
 
 		_unlisten: function () {
 			console.log("unlisten")
-			if (onInputSupport) {
-				this.$element.off('input', this._run);
-			}
-			else {
-				window.clearInterval(this._interval);
-			}
+			window.clearInterval(this._interval);
 			return true;
 		},
 
 		_run: function () {
 			this.value = this.element.value;
-			this.$element.trigger("inputChange")
-			// this._callback(this.value, this.element);
+			this.$element.trigger("input")
 		},
 
 		_check: function () {
@@ -182,17 +164,6 @@
 		},
 		onInputSupport: onInputSupport
 	})
-
-	// $.fn.onInputChange = function (callback, options) {
-	// 	return this.each(function () {
-	// 		new OnInputChange(this, callback, options);
-	// 	});
-	// };
-
-	// return {
-	// 	Constructor: OnInputChange,
-	// 	support: onInputSupport
-	// };
 
 })(window.jQuery)
 
