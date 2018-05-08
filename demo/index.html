@@ -16,7 +16,7 @@
 	<script>
 		$(function () {
 			var screen = document.getElementById('screen');
-			$('#support').html(($.onInputChange.support) ? 'Using native oninput event' : 'Using setInterval');
+			$('#support').html(($.onInputSupport) ? 'Using native oninput event' : 'Using setInterval');
 			$.onInputChange({
 				selector: "#textInput"
 			});
