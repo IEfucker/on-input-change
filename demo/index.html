@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>onInputChange</title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+	<label for="textInput">#textInput</label>
+	<input id="textInput" type="text">
+	<p id="support"></p>
+	<p id="screen"></p>
+	<script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>
+	<script src="../src/jquery.onInputChange.js"></script>
+	<script>
+		$(function () {
+			var screen = document.getElementById('screen');
+			$('#support').html(($.onInputChange.support) ? 'Using native oninput event' : 'Using setInterval');
+			$.onInputChange({
+				selector: "#textInput"
+			});
+
+			$("#textInput").on("inputChange", function (e) {
+				console.log(e)
+				var value = $(e.target).val()
+				screen.innerHTML = screen.innerHTML + 'input value changed to ' + value + '<br>';
+			})
+		})
+	</script>
+
+</body>
+
+</html>
