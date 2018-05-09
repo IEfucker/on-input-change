@@ -1,3 +1,36 @@
+## fork from https://github.com/bbarakaci/on-input-change
+
+## Features added
+
+[ ] "input" event polyfill triggered by jQuery in ie9-, native event in modern browser
+
+[ ] delegation
+
+[ ] "input" feature test
+
+
+## sample code
+
+```
+// use feature check if you need
+$.onInputSupport
+
+// init, add input event polyfill to element needed
+$.onInputChange({
+    selector: "#textInput"
+})
+
+// add input event handler
+$("#textInput").on("input", function (e) {
+    var value = $(e.target).val()
+    console.log(value)
+})
+
+```
+
+
+====================
+
 #On Input Change
 
 oninput event is not supported by ie lt 9 and is buggy on ie9.
