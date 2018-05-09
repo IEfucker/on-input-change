@@ -22,7 +22,9 @@
 		}
 	}
 
-	// code form modernizr.js
+	// code form modernizr.js, but not reliable in some browser
+	// https://github.com/Modernizr/Modernizr/issues/210
+	// https://github.com/Modernizr/Modernizr/wiki/Undetectables
 	var hasEvent = (function () {
 
 		// Detect whether event support can be detected via `in`. Test on a DOM element
@@ -50,6 +52,7 @@
 					// It could be the `document`, `window`, or something else.
 					element = createElement('div');
 				}
+
 
 				element.setAttribute(eventName, '');
 				isSupported = typeof element[eventName] === 'function';
@@ -104,7 +107,8 @@
 		return Date.now() || new Date().getTime()
 	}
 
-	var onInputSupport = hasEvent("input")
+	// need fallback fix, oninput is undetectable in some browser
+	var onInputSupport = hasEvent("input", "input")
 
 	/* 
 	onInputChange constructor
@@ -126,14 +130,34 @@
 			time: time
 		}, opt)
 
-		$("body").on("focus", selector, $.proxy(this._listen, this))
-		$("body").on("blur", selector, $.proxy(this._unlisten, this))
+		var listen = $.proxy(this._listen, this),
+			unlisten = $.proxy(this._unlisten, this)
+
+		$("body").on("focus", selector, listen)
+		$("body").on("blur", selector, unlisten)
+
+		// bug fix: oninput undetected in IE11 and other browers 
+		// this input should be native event, which always fires before custom event triggered by jQuery
+		$("body").on("input", selector, function (e, obj) {
+			/* if event is triggered by jQuery, 
+				which means native event did not fire and is unsupported, like ie8-
+				do not run this fix
+			*/
+			if (obj && obj.isCustom) return
+			// if onInputSupport's value has been fixed, return
+			if (onInputSupport) return
+			// onInputSupport is buggy in first run, fix it and remove focus/blur handler
+			onInputSupport = true
+			unlisten()
+			$("body").off("focus", selector, listen)
+			$("body").off("blur", selector, unlisten)
+		})
 	}
 
 	OnInputChange.prototype = {
 
 		_listen: function () {
-			console.log("listen")
+			// console.log("listen")
 			// init this.value in delegate way
 			this.value = this.element.value
 			this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
@@ -141,14 +165,14 @@
 		},
 
 		_unlisten: function () {
-			console.log("unlisten")
+			// console.log("unlisten")
 			window.clearInterval(this._interval);
 			return true;
 		},
 
 		_run: function () {
 			this.value = this.element.value;
-			this.$element.trigger("input")
+			this.$element.trigger("input", { isCustom: true })
 		},
 
 		_check: function () {
