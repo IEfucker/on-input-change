@@ -2,11 +2,11 @@
 
 ## Features added
 
-[ ] "input" event polyfill triggered by jQuery in ie9-, native event in modern browser
+[ ] "oninput" event polyfill triggered by jQuery in IE8-(IE9 need fix), native event in modern browser
 
 [ ] delegation
 
-[ ] "input" feature test
+[ ] "oninput" feature detection
 
 
 ## sample code
