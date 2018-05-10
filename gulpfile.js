@@ -38,7 +38,7 @@ gulp.task("server:dev", function (done) {
 		livereload: true,
 		port: 8888
 	})
-	opn("http://localhost:8888/")
+	opn("http://localhost:8888/demo/")
 })
 
 gulp.task("watch", function () {
