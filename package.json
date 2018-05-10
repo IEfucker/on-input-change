@@ -44,5 +44,7 @@
   "peerDependencies": {
     "jquery": "^1.12.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^1.12.4"
+  }
 }
