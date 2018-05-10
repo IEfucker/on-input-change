@@ -7,12 +7,12 @@ describe("native 'input' feature support",function(){
     })
 })
 
-describe("test input",function(){
-    it("input fire",function(){
-        $("#test").on("input",function(){
-            console.log(arguments)
-        })
+// describe("test input",function(){
+//     it("input fire",function(){
+//         $("#test").on("input",function(){
+//             console.log(arguments)
+//         })
         
-        $("#test").focus().val(2).trigger("keypress",[9])
-    })
-})
+//         $("#test").focus().val(2).trigger("keypress",[9])
+//     })
+// })
