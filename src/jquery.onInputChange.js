@@ -22,7 +22,7 @@
 		}
 	}
 
-	// code form modernizr.js, but not reliable in some browser
+	// code form modernizr.js, but not reliable in ie8+
 	// https://github.com/Modernizr/Modernizr/issues/210
 	// https://github.com/Modernizr/Modernizr/wiki/Undetectables
 	var hasEvent = (function () {
@@ -107,6 +107,14 @@
 		return Date.now() || new Date().getTime()
 	}
 
+	function isIE9() {
+		var browser = navigator.appName
+		var b_version = navigator.appVersion
+		var version = b_version.split(";")
+		var trim_Version = version[1].replace(/[ ]/g, "")
+		return (browser == "Microsoft Internet Explorer" && trim_Version == "MSIE9.0")
+	}
+
 	// need fallback fix, oninput is undetectable in some browser
 	var onInputSupport = hasEvent("input", "input")
 
@@ -143,7 +151,7 @@
 				which means native event did not fire and is not supported, like ie8-
 				do not run this fix
 			*/
-			if (obj && obj.isCustom) return
+			if ((obj && obj.isCustom) || isIE9()) return
 			// if onInputSupport's value has been fixed, not the first call, return
 			if (onInputSupport) return
 			// onInputSupport is buggy in first run, fix it and remove focus/blur handler
