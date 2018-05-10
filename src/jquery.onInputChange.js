@@ -137,14 +137,14 @@
 		$("body").on("blur", selector, unlisten)
 
 		// bug fix: oninput undetected in IE11 and other browers 
-		// this input should be native event, which always fires before custom event triggered by jQuery
+		// this input should be native event, which always fires before custom event, for custom event is fired in timeout
 		$("body").on("input", selector, function (e, obj) {
 			/* if event is triggered by jQuery, 
-				which means native event did not fire and is unsupported, like ie8-
+				which means native event did not fire and is not supported, like ie8-
 				do not run this fix
 			*/
 			if (obj && obj.isCustom) return
-			// if onInputSupport's value has been fixed, return
+			// if onInputSupport's value has been fixed, not the first call, return
 			if (onInputSupport) return
 			// onInputSupport is buggy in first run, fix it and remove focus/blur handler
 			onInputSupport = true
@@ -155,7 +155,6 @@
 	}
 
 	OnInputChange.prototype = {
-
 		_listen: function () {
 			// console.log("listen")
 			// init this.value in delegate way
