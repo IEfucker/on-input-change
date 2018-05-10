@@ -9,11 +9,10 @@
 	}})
 	*/
 (function ($) {
-	// code form modernizr.js, but not reliable in ie9+
+	// code form modernizr.js, but not reliable in ie9+(but it seems to work fine)
 	// https://github.com/Modernizr/Modernizr/issues/210
 	// https://github.com/Modernizr/Modernizr/wiki/Undetectables
 	var hasEvent = (function () {
-
 		// Detect whether event support can be detected via `in`. Test on a DOM element
 		// using the "blur" event b/c it should always exist. bit.ly/event-detection
 		var needsFallback = !('onblur' in document.documentElement);
@@ -38,7 +37,6 @@
 					// It could be the `document`, `window`, or something else.
 					element = createElement('div');
 				}
-
 
 				element.setAttribute(eventName, '');
 				isSupported = typeof element[eventName] === 'function';
@@ -103,7 +101,6 @@
 
 	// need fallback fix, oninput is undetectable in some browser
 	var onInputSupport = hasEvent("input", "input")
-	console.log(onInputSupport)
 
 	/* 
 	onInputChange constructor
@@ -131,25 +128,6 @@
 		$("body").on("focus", selector, listen)
 		$("body").on("blur", selector, unlisten)
 
-		// bug fix: oninput undetected in IE10-11
-		// this input should be native event, which always fires before custom event, for custom event is fired in timeout
-		// $("body").on("input", selector, function (e, obj) {
-		// 	/* if event is triggered by jQuery, 
-		// 		which means native event did not fire and is not supported, like IE8-
-		// 		do not run this fix
-		// 	*/
-		// 	// IE8-
-		// 	if ((obj && obj.isCustom)) return
-		// 	// if onInputSupport's value has been fixed, not the first call, return
-		// 	if (onInputSupport) return
-		// 	// onInputSupport is buggy in first run, fix it and remove focus/blur handler
-		// 	onInputSupport = true
-		// 	unlisten()
-		// 	$("body").off("focus", selector, listen)
-		// 	$("body").off("blur", selector, unlisten)
-		// })
-
-
 		// bug fix: oninput won't fire by backspace, delete and cut(keyboard/mouse) in IE9
 		if (isIE9()) {
 			$("body").on("onkeydown", selector, function () {
@@ -165,7 +143,6 @@
 
 	OnInputChange.prototype = {
 		_listen: function () {
-			// console.log("listen")
 			// init this.value in delegate way
 			this.value = this.element.value
 			this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
@@ -173,7 +150,6 @@
 		},
 
 		_unlisten: function () {
-			// console.log("unlisten")
 			window.clearInterval(this._interval);
 			return true;
 		},
