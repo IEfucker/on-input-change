@@ -9,20 +9,7 @@
 	}})
 	*/
 (function ($) {
-	// code form modernizr.js
-	function createElement(isSVG) {
-		if (typeof document.createElement !== 'function') {
-			// This is the case in IE7, where the type of createElement is "object".
-			// For this reason, we cannot call apply() as Object is not a Function.
-			return document.createElement(arguments[0]);
-		} else if (isSVG) {
-			return document.createElementNS.call(document, 'http://www.w3.org/2000/svg', arguments[0]);
-		} else {
-			return document.createElement.apply(document, arguments);
-		}
-	}
-
-	// code form modernizr.js, but not reliable in ie8+
+	// code form modernizr.js, but not reliable in ie9+
 	// https://github.com/Modernizr/Modernizr/issues/210
 	// https://github.com/Modernizr/Modernizr/wiki/Undetectables
 	var hasEvent = (function () {
@@ -32,11 +19,10 @@
 		var needsFallback = !('onblur' in document.documentElement);
 
 		function inner(eventName, element) {
-
 			var isSupported;
 			if (!eventName) { return false; }
 			if (!element || typeof element === 'string') {
-				element = createElement(element || 'div');
+				element = document.createElement(element || 'div');
 			}
 
 			// Testing via the `in` operator is sufficient for modern browsers and IE.
@@ -117,6 +103,7 @@
 
 	// need fallback fix, oninput is undetectable in some browser
 	var onInputSupport = hasEvent("input", "input")
+	console.log(onInputSupport)
 
 	/* 
 	onInputChange constructor
@@ -146,31 +133,33 @@
 
 		// bug fix: oninput undetected in IE10-11
 		// this input should be native event, which always fires before custom event, for custom event is fired in timeout
-		$("body").on("input", selector, function (e, obj) {
-			/* if event is triggered by jQuery, 
-				which means native event did not fire and is not supported, like IE8-
-				do not run this fix
-			*/
-			// IE8-
-			if ((obj && obj.isCustom)) return
-			// if onInputSupport's value has been fixed, not the first call, return
-			if (onInputSupport) return
-			// onInputSupport is buggy in first run, fix it and remove focus/blur handler
-			onInputSupport = true
-			unlisten()
-			$("body").off("focus", selector, listen)
-			$("body").off("blur", selector, unlisten)
-		})
+		// $("body").on("input", selector, function (e, obj) {
+		// 	/* if event is triggered by jQuery, 
+		// 		which means native event did not fire and is not supported, like IE8-
+		// 		do not run this fix
+		// 	*/
+		// 	// IE8-
+		// 	if ((obj && obj.isCustom)) return
+		// 	// if onInputSupport's value has been fixed, not the first call, return
+		// 	if (onInputSupport) return
+		// 	// onInputSupport is buggy in first run, fix it and remove focus/blur handler
+		// 	onInputSupport = true
+		// 	unlisten()
+		// 	$("body").off("focus", selector, listen)
+		// 	$("body").off("blur", selector, unlisten)
+		// })
+
+
 		// bug fix: oninput won't fire by backspace, delete and cut(keyboard/mouse) in IE9
 		if (isIE9()) {
 			$("body").on("onkeydown", selector, function () {
 				var key = window.event.keyCode;
-				if(key == 8 || key == 46) self.$element.trigger("input", { isCustom: true })
+				if (key == 8 || key == 46) self.$element.trigger("input", { isCustom: true })
 			})
 			$("body").on("oncut", selector, function () {
 				self.$element.trigger("input", { isCustom: true })
 			})
-			
+
 		}
 	}
 
