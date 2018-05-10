@@ -144,14 +144,15 @@
 		$("body").on("focus", selector, listen)
 		$("body").on("blur", selector, unlisten)
 
-		// bug fix: oninput undetected in IE11 and other browers 
+		// bug fix: oninput undetected in IE10-11
 		// this input should be native event, which always fires before custom event, for custom event is fired in timeout
 		$("body").on("input", selector, function (e, obj) {
 			/* if event is triggered by jQuery, 
-				which means native event did not fire and is not supported, like ie8-
+				which means native event did not fire and is not supported, like IE8-
 				do not run this fix
 			*/
-			if ((obj && obj.isCustom) || isIE9()) return
+			// IE8-
+			if ((obj && obj.isCustom)) return
 			// if onInputSupport's value has been fixed, not the first call, return
 			if (onInputSupport) return
 			// onInputSupport is buggy in first run, fix it and remove focus/blur handler
@@ -160,6 +161,17 @@
 			$("body").off("focus", selector, listen)
 			$("body").off("blur", selector, unlisten)
 		})
+		// bug fix: oninput won't fire by backspace, delete and cut(keyboard/mouse) in IE9
+		if (isIE9()) {
+			$("body").on("onkeydown", selector, function () {
+				var key = window.event.keyCode;
+				if(key == 8 || key == 46) self.$element.trigger("input", { isCustom: true })
+			})
+			$("body").on("oncut", selector, function () {
+				self.$element.trigger("input", { isCustom: true })
+			})
+			
+		}
 	}
 
 	OnInputChange.prototype = {
