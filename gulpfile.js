@@ -41,6 +41,14 @@ gulp.task("server:dev", function (done) {
 	opn("http://localhost:8888/demo/")
 })
 
+gulp.task("test", function (done) {
+	$.connect.server({
+		root: './',
+		port: 8889
+	})
+	opn("http://localhost:8889/test/on-input-change.html")
+})
+
 gulp.task("watch", function () {
 	return $.watch([
 		"./src/*.*",

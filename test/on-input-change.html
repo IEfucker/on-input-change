@@ -13,7 +13,10 @@
   <script src="../node_modules/mocha/mocha.js"></script>
   <script src="../node_modules/chai/chai.js"></script>
 
-  <script>mocha.setup('bdd')</script>
+  <script>mocha.setup({
+    ui:'bdd',
+    ignoreLeaks:true
+  })</script>
   <script src="test.onInputChange.js"></script>
   <script>
     mocha.checkLeaks();
