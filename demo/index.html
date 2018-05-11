@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>onInputChange</title>
+	<title>onInputPolyfill</title>
 	<meta charset="utf-8" />
 </head>
 
@@ -11,8 +11,8 @@
 	<input id="textInput" type="text">
 	<p id="support"></p>
 	<p id="screen"></p>
-	<script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>
-	<script src="../src/jquery.onInputChange.js"></script>
+	<script type="text/javascript" src="../node_modules/jquery/jquery.min.js"></script>
+	<script src="../dist/jquery.oninput.polyfill.js"></script>
 	<script>
 
 		$(function () {
@@ -22,7 +22,7 @@
 			// add input event polyfill to element needed
 			$('#support').html(($.onInputSupport) ? 'Using native oninput event' : 'Using setInterval')
 			
-			$.onInputChange({
+			$.onInputPolyfill({
 				selector: "#textInput"
 			});
 			// add input event handler

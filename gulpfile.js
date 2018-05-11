@@ -14,7 +14,7 @@ var comment = '/*\n' +
 gulp.task("uglify", function () {
 	var src = "./src/",
 		dest = "./dist"
-	return gulp.src(src + "jquery.onInputChange.js")
+	return gulp.src(src + "jquery.oninput.polyfill.js")
 		.pipe($.uglify({
 			mangle: {
 				reserved: ["require", "module", "exports"]

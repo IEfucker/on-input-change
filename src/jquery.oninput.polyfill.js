@@ -3,7 +3,7 @@
 	ie9 doesn't trigger oninput event when content is removed with BACKSPACE, ctrl+x etc...
 	API:
 	1.$.onInputSupport for feature check
-	2.$.onInputChange({
+	2.$.onInputPolyfill({
 		selector,
 		time
 	}})
@@ -53,40 +53,6 @@
 		return inner;
 	})()
 
-	// code from underscore.js
-	// http://underscorejs.org/docs/underscore.html#section-83
-	function debounce(func, wait, immediate) {
-		var timeout, args, context, timestamp, result;
-
-		var later = function () {
-			var last = now() - timestamp;
-
-			if (last < wait && last >= 0) {
-				timeout = setTimeout(later, wait - last);
-			} else {
-				timeout = null;
-				if (!immediate) {
-					result = func.apply(context, args);
-					if (!timeout) context = args = null;
-				}
-			}
-		};
-
-		return function () {
-			context = this;
-			args = arguments;
-			timestamp = now();
-			var callNow = immediate && !timeout;
-			if (!timeout) timeout = setTimeout(later, wait);
-			if (callNow) {
-				result = func.apply(context, args);
-				context = args = null;
-			}
-
-			return result;
-		};
-	}
-
 	function now() {
 		return Date.now() || new Date().getTime()
 	}
@@ -103,13 +69,13 @@
 	var onInputSupport = hasEvent("input", "input")
 
 	/* 
-	onInputChange constructor
+	onInputPolyfill constructor
 	opt:{
 		selector,
 		time
 	}
 	*/
-	function OnInputChange(opt) {
+	function OnInputPolyfill(opt) {
 		var selector = opt.selector || "",
 			time = opt.time || 150,
 			self = this
@@ -141,7 +107,7 @@
 		}
 	}
 
-	OnInputChange.prototype = {
+	OnInputPolyfill.prototype = {
 		_listen: function () {
 			// init this.value in delegate way
 			this.value = this.element.value
@@ -167,8 +133,8 @@
 	};
 
 	$.extend({
-		onInputChange: function (opt) {
-			new OnInputChange(opt)
+		onInputPolyfill: function (opt) {
+			new OnInputPolyfill(opt)
 		},
 		onInputSupport: onInputSupport
 	})
