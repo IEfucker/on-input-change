@@ -65,8 +65,10 @@
 		return (browser == "Microsoft Internet Explorer" && trim_Version == "MSIE9.0")
 	}
 
-	// need fallback fix, oninput is undetectable in some browser
-	var onInputSupport = hasEvent("input", "input")
+	/* In IE9 oninput won't fire by backspace, delete, ctrl+z, cut(keyboard/mouse) and so on..
+		so use interval instead
+	*/
+	var onInputSupport = isIE9() ? false : hasEvent("input", "input")
 
 	/* 
 	onInputPolyfill constructor
@@ -82,8 +84,12 @@
 
 		this.$element = $(selector)
 		this.element = this.$element[0]
-		// selector invalid or input event is supported
+		// selector invalid 
 		if (!this.element || onInputSupport) return
+
+		// oninput support,use native event
+		if (onInputSupport) return
+
 		this.options = $.extend({
 			time: time
 		}, opt)
@@ -94,17 +100,7 @@
 		$("body").on("focus", selector, listen)
 		$("body").on("blur", selector, unlisten)
 
-		// bug fix: oninput won't fire by backspace, delete and cut(keyboard/mouse) in IE9
-		if (isIE9()) {
-			$("body").on("onkeydown", selector, function () {
-				var key = window.event.keyCode;
-				if (key == 8 || key == 46) self.$element.trigger("input", { isCustom: true })
-			})
-			$("body").on("oncut", selector, function () {
-				self.$element.trigger("input", { isCustom: true })
-			})
 
-		}
 	}
 
 	OnInputPolyfill.prototype = {
@@ -126,6 +122,7 @@
 		},
 
 		_check: function () {
+			console.log(this.element.value, this.value)
 			if (this.element.value != this.value) {
 				this._run();
 			}
