@@ -140,8 +140,6 @@
 		},
 
 		_check: function () {
-			// console.log("check")
-			// console.log(this.element.value == this.value)
 			if (this.element.value != this.value) {
 				this._run();
 			}
