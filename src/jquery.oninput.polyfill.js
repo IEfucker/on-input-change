@@ -65,10 +65,7 @@
 		return (browser == "Microsoft Internet Explorer" && trim_Version == "MSIE9.0")
 	}
 
-	/* In IE9 oninput won't fire by backspace, delete, ctrl+z, cut(keyboard/mouse) and so on..
-		so use interval instead
-	*/
-	var onInputSupport = isIE9() ? false : hasEvent("input", "input")
+	var onInputSupport = hasEvent("input", "input")
 
 	/* 
 	onInputPolyfill constructor
@@ -84,10 +81,35 @@
 
 		this.$element = $(selector)
 		this.element = this.$element[0]
-		// selector invalid 
-		if (!this.element || onInputSupport) return
+		this.value = this.element.value
 
-		// oninput support,use native event
+		// selector invalid 
+		if (!this.element) return
+
+		/* 
+			IE9 fix
+			In IE9 oninput won't fire by backspace, delete, ctrl+z, cut(keyboard/mouse) and so on..
+		*/
+		if (isIE9()) {
+			// backspace, delete, ctrl+z
+			$("body").on("keydown", selector, function () {
+				var key = window.event.keyCode;
+				if (key == 8 || key == 46 || key == 90) {
+					setTimeout(function () {
+						// check if value changes actually
+						self._check()
+					}, 0)
+				}
+			})
+			// cut(mouse/keyboard)
+			$("body").on("cut", selector, function () {
+				setTimeout(function () {
+					self.$element.trigger("input", { isCustom: true })
+				}, 0)
+			})
+		}
+
+		// oninput support, use native event
 		if (onInputSupport) return
 
 		this.options = $.extend({
@@ -99,14 +121,10 @@
 
 		$("body").on("focus", selector, listen)
 		$("body").on("blur", selector, unlisten)
-
-
 	}
 
 	OnInputPolyfill.prototype = {
 		_listen: function () {
-			// init this.value in delegate way
-			this.value = this.element.value
 			this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
 			return true;
 		},
@@ -122,7 +140,8 @@
 		},
 
 		_check: function () {
-			console.log(this.element.value, this.value)
+			// console.log("check")
+			// console.log(this.element.value == this.value)
 			if (this.element.value != this.value) {
 				this._run();
 			}
