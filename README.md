@@ -11,12 +11,12 @@
 
 ## sample code
 
-```
+```js
 // use feature check if you need
 $.onInputSupport
 
 // init, add input event polyfill to element needed
-$.onInputChange({
+$.onInputPolyfill({
     selector: "#textInput"
 })
 
