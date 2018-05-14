@@ -17,6 +17,7 @@
   },
   "keywords": [
     "oninput",
+    "input event",
     "IE9-",
     "polyfill"
   ],
