@@ -34,3 +34,29 @@ $("#textInput").on("input", function (e) {
 })
 
 ```
+
+## tips
+
+Event "input" fires like native behavior, you may need a debounce for performance, when using a long-time computation or firing a network request.
+
+So implement debounce yourself, like this:
+
+```js
+/* get debounce fn code from http://underscorejs.org/docs/underscore.html#section-83,
+or use a third lib like underscore directly
+*/
+
+// original "input" event handler
+function callback(e){
+
+}
+
+// debounce callback
+function dCallback(e){
+	_.debounce(callback,t)(e)
+}
+
+// handler
+$("#textInput").on("input", dCallback)
+
+```
