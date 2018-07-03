@@ -79,12 +79,14 @@
 			time = opt.time || 150,
 			self = this
 
-		this.$element = $(selector)
-		this.element = this.$element[0]
-		this.value = this.element.value
-
 		// selector invalid 
-		if (!this.element) return
+		if (!$(selector)[0]) return
+		setTimeout(function () {
+			$(selector).each(function () {
+				$(this).prop("prev-value", $(this).val())
+			})
+		}, 0)
+
 
 		/* 
 			IE9 fix
@@ -93,18 +95,19 @@
 		if (isIE9()) {
 			// backspace, delete, ctrl+z
 			$("body").on("keydown", selector, function () {
-				var key = window.event.keyCode;
+				var key = window.event.keyCode,
+					$ele = $(this)
 				if (key == 8 || key == 46 || key == 90) {
 					setTimeout(function () {
 						// check if value changes actually
-						self._check()
+						self._check($ele)
 					}, 0)
 				}
 			})
 			// cut(mouse/keyboard)
 			$("body").on("cut", selector, function () {
 				setTimeout(function () {
-					self.$element.trigger("input", { isCustom: true })
+					$(this).trigger("input", { isCustom: true })
 				}, 0)
 			})
 		}
@@ -124,8 +127,11 @@
 	}
 
 	OnInputPolyfill.prototype = {
-		_listen: function () {
-			this._interval = window.setInterval($.proxy(this._check, this), this.options.time);
+		_listen: function (e) {
+			var check = $.proxy(this._check, this)
+			this._interval = window.setInterval(function () {
+				check($(e.target))
+			}, this.options.time);
 			return true;
 		},
 
@@ -134,14 +140,14 @@
 			return true;
 		},
 
-		_run: function () {
-			this.value = this.element.value;
-			this.$element.trigger("input", { isCustom: true })
+		_run: function ($ele) {
+			$ele.prop("prev-value", $ele.val())
+			$ele.trigger("input", { isCustom: true })
 		},
 
-		_check: function () {
-			if (this.element.value != this.value) {
-				this._run();
+		_check: function ($ele) {
+			if ($ele.val() != $ele.prop("prev-value")) {
+				this._run($ele);
 			}
 		}
 	};
