@@ -1,6 +1,6 @@
 {
-  "name": "@cnpm/oninput-polyfill",
-  "version": "0.1.0",
+  "name": "oninput-polyfill",
+  "version": "0.1.1",
   "description": "IE9- oninput polyfill",
   "main": "./dist/jquery.oninput.polyfill.min.js",
   "directories": {
