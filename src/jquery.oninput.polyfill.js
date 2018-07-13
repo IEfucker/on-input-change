@@ -58,11 +58,15 @@
 	}
 
 	function isIE9() {
-		var browser = navigator.appName
-		var b_version = navigator.appVersion
-		var version = b_version.split(";")
-		var trim_Version = version[1].replace(/[ ]/g, "")
-		return (browser == "Microsoft Internet Explorer" && trim_Version == "MSIE9.0")
+		try {
+			var browser = navigator.appName
+			var b_version = navigator.appVersion
+			var version = b_version.split(";")
+			var trim_Version = version[1].replace(/[ ]/g, "")
+			return (browser == "Microsoft Internet Explorer" && trim_Version == "MSIE9.0")
+		} catch (e) {
+			return false
+		}
 	}
 
 	var onInputSupport = hasEvent("input", "input")
